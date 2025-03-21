@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事实卫士 - 事实核查服务</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+            min-height: 100vh;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .logo-container {
+            position: relative;
+            padding: 2rem 0;
+        }
+        .logo-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 0;
+        }
+        .logo-shield {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            transform: rotate(45deg);
+            animation: shieldPulse 2s infinite;
+        }
+        .logo-inner {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+        .logo-rays {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            animation: raysRotate 4s linear infinite;
+        }
+        .logo-rays::before,
+        .logo-rays::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform-origin: center;
+        }
+        .logo-rays::before {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+        .logo-rays::after {
+            transform: translate(-50%, -50%) rotate(90deg);
+        }
+        .logo-icon {
+            font-size: 3.5rem;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transform: rotate(-45deg);
+        }
+        .logo-text {
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-weight: 700;
+            font-size: 3.5rem;
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(45deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .logo-text::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+            border-radius: 2px;
+        }
+        .subtitle {
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 1.25rem;
+        }
+        @keyframes shieldPulse {
+            0% {
+                transform: rotate(45deg) scale(1);
+            }
+            50% {
+                transform: rotate(45deg) scale(1.05);
+            }
+            100% {
+                transform: rotate(45deg) scale(1);
+            }
+        }
+        @keyframes raysRotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .btn {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .btn:hover::after {
+            left: 100%;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+        .step-icon.active {
+            background: #3b82f6;
+            transform: scale(1.1);
+        }
+        .step-icon.completed {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+        .source-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .source-card:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .contribution-score {
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        .contribution-score.high {
+            color: #10b981;
+        }
+        .contribution-score.medium {
+            color: #f59e0b;
+        }
+        .contribution-score.low {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <header class="header py-6">
+        <div class="container mx-auto px-4">
+            <div class="logo-container">
+                <div class="logo-wrapper animate__animated animate__fadeIn">
+                    <div class="logo-shield">
+                        <div class="logo-inner">
+                            <i class="fas fa-shield-alt logo-icon"></i>
+                        </div>
+                        <div class="logo-rays"></div>
+                    </div>
+                    <h1 class="logo-text animate__animated animate__fadeInDown">事实卫士</h1>
+                    <p class="subtitle animate__animated animate__fadeInUp">验证任何文本或文章的真实性</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- 标签页 -->
+            <div class="flex space-x-4 mb-6">
+                <button id="textTab" class="btn px-6 py-2 rounded-lg flex items-center space-x-2">
+                    <i class="fas fa-file-alt"></i>
+                    <span>核查文本</span>
+                </button>
+                <button id="urlTab" class="btn px-6 py-2 rounded-lg flex items-center space-x-2">
+                    <i class="fas fa-link"></i>
+                    <span>核查链接</span>
+                </button>
+            </div>
+
+            <!-- 表单 -->
+            <form id="factCheckForm" class="card p-6 rounded-lg mb-8">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">输入要核查的文本</label>
+                    <textarea id="textInput" rows="4" class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="在此粘贴要核查的文本..."></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">输入要核查的链接</label>
+                    <input type="url" id="urlInput" class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="在此输入要核查的链接...">
+                </div>
+                <button type="submit" class="btn w-full py-3 rounded-lg flex items-center justify-center space-x-2">
+                    <i class="fas fa-search"></i>
+                    <span>分析待核查内容</span>
+                </button>
+            </form>
+
+            <!-- 待核查内容预览 -->
+            <div id="claimsPreview" class="hidden mb-8">
+                <div class="card p-6 rounded-lg">
+                    <h2 class="text-xl font-bold mb-4">待核实的点</h2>
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <h3 class="text-lg font-medium mb-2">原文内容：</h3>
+                            <div id="originalText" class="bg-gray-800 p-4 rounded-lg mb-4"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium mb-2">待核实的点：</h3>
+                            <div id="claimsList" class="space-y-3"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-4">
+                        <button onclick="cancelAnalysis()" class="btn px-6 py-2 rounded-lg flex items-center space-x-2 bg-gray-600 hover:bg-gray-700">
+                            <i class="fas fa-times"></i>
+                            <span>取消</span>
+                        </button>
+                        <button onclick="confirmClaims()" class="btn px-6 py-2 rounded-lg flex items-center space-x-2">
+                            <i class="fas fa-check"></i>
+                            <span>确认并继续分析</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 进度显示 -->
+            <div id="progressSection" class="hidden mb-8">
+                <div class="card p-6 rounded-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex-1 mr-4">
+                            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                                <div id="progressBar" class="progress-bar h-full w-0 rounded-full"></div>
+                            </div>
+                        </div>
+                        <span id="progressPercentage" class="text-sm font-medium">0%</span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div id="step1" class="step-icon mx-auto rounded-full flex items-center justify-center mb-2">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <p class="text-sm">正在分析文本...</p>
+                        </div>
+                        <div class="text-center">
+                            <div id="step2" class="step-icon mx-auto rounded-full flex items-center justify-center mb-2">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <p class="text-sm">搜索相关来源</p>
+                        </div>
+                        <div class="text-center">
+                            <div id="step3" class="step-icon mx-auto rounded-full flex items-center justify-center mb-2">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <p class="text-sm">分析来源可信度</p>
+                        </div>
+                        <div class="text-center">
+                            <div id="step4" class="step-icon mx-auto rounded-full flex items-center justify-center mb-2">
+                                <i class="fas fa-file-signature"></i>
+                            </div>
+                            <p class="text-sm">生成分析报告</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 结果区域 -->
+            <div id="results" class="hidden">
+                <div class="card p-6 rounded-lg mb-6">
+                    <h2 class="text-xl font-bold mb-4">分析结果</h2>
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div id="factStatus" class="text-2xl">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                        <div>
+                            <p id="factStatusText" class="text-lg font-medium"></p>
+                            <p id="confidenceLevel" class="text-sm text-gray-400"></p>
+                        </div>
+                    </div>
+                    <p id="explanation" class="text-gray-300"></p>
+                </div>
+
+                <div class="card p-6 rounded-lg">
+                    <h2 class="text-xl font-bold mb-4">参考来源</h2>
+                    <div id="sources" class="space-y-4"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html> 

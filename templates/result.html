@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}事实核查结果 - 事实卫士{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <!-- Summary Card -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+                <div class="result-icon me-3">
+                    {% if result.is_fact %}
+                    <i class="fas fa-check-circle text-success fa-3x"></i>
+                    {% else %}
+                    <i class="fas fa-times-circle text-danger fa-3x"></i>
+                    {% endif %}
+                </div>
+                <div>
+                    <h2 class="card-title mb-1">
+                        {% if result.is_fact %}
+                        这条信息基本准确
+                        {% else %}
+                        这条信息可能不准确
+                        {% endif %}
+                    </h2>
+                    <div class="confidence-meter">
+                        <div class="progress">
+                            <div class="progress-bar {% if result.confidence > 0.7 %}bg-success{% elif result.confidence > 0.4 %}bg-warning{% else %}bg-danger{% endif %}"
+                                 role="progressbar"
+                                 style="width: {{ result.confidence * 100 }}%"
+                                 aria-valuenow="{{ result.confidence * 100 }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                                {{ "%.1f"|format(result.confidence * 100) }}% 可信度
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explanation -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3 class="card-title">分析说明</h3>
+            <p class="card-text">{{ result.explanation }}</p>
+        </div>
+    </div>
+
+    <!-- Sources -->
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">参考来源</h3>
+            <div class="sources-list">
+                {% for source in result.sources %}
+                <div class="source-item mb-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="mb-1">{{ source.title }}</h5>
+                            <p class="mb-1 text-muted">{{ source.snippet }}</p>
+                            <a href="{{ source.link }}" target="_blank" class="btn btn-sm btn-outline-primary">查看原文</a>
+                        </div>
+                        <div class="source-score">
+                            <span class="badge {% if source.contribution_score > 0.7 %}bg-success{% elif source.contribution_score > 0.4 %}bg-warning{% else %}bg-danger{% endif %}">
+                                贡献度: {{ "%.1f"|format(source.contribution_score * 100) }}%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

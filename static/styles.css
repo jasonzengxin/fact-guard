@@ -1,0 +1,282 @@
+/* Custom styles for Fact Guard */
+
+/* Tab button styles */
+.tab-button {
+    transition: all 0.3s ease;
+}
+
+.tab-button.active {
+    background-color: #2563eb;
+    color: white;
+}
+
+/* Source card styles */
+.source-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.source-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.source-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.source-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.source-type {
+    font-size: 0.875rem;
+    color: #718096;
+    background-color: #edf2f7;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.source-content {
+    margin-bottom: 12px;
+}
+
+.source-snippet {
+    font-size: 0.95rem;
+    color: #4a5568;
+    line-height: 1.5;
+    margin: 0 0 12px 0;
+}
+
+.source-link {
+    display: inline-block;
+    color: #3182ce;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.source-link:hover {
+    text-decoration: underline;
+}
+
+.source-details {
+    font-size: 0.875rem;
+    color: #718096;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.source-details p {
+    margin: 4px 0;
+}
+
+.source-authors {
+    color: #2d3748;
+    font-weight: 500;
+}
+
+.source-year {
+    color: #4a5568;
+}
+
+.source-journal {
+    color: #4a5568;
+    font-style: italic;
+}
+
+.source-citations {
+    color: #4a5568;
+}
+
+.source-abstract {
+    color: #4a5568;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.source-type-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.source-type-badge.academic {
+    background-color: #ebf8ff;
+    color: #2b6cb0;
+}
+
+.source-type-badge.news {
+    background-color: #f0fff4;
+    color: #2f855a;
+}
+
+.source-type-badge.blog {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+.source-type-badge.government {
+    background-color: #faf5ff;
+    color: #6b46c1;
+}
+
+.source-type-badge.unknown {
+    background-color: #edf2f7;
+    color: #718096;
+}
+
+/* Discrepancy card styles */
+.discrepancy-card {
+    background-color: #fff5f5;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #ef4444;
+}
+
+.discrepancy-header {
+    margin-bottom: 16px;
+}
+
+.discrepancy-title {
+    color: #c53030;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.discrepancy-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.section-label {
+    color: #2d3748;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+}
+
+.claim-section {
+    background-color: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #fed7d7;
+}
+
+.claim-text {
+    color: #2d3748;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.source-section {
+    background-color: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #fed7d7;
+}
+
+.source-card-inline {
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 12px;
+}
+
+.source-title {
+    color: #2d3748;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+}
+
+.explanation-section {
+    background-color: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #fed7d7;
+}
+
+.explanation-text {
+    color: #4a5568;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .tab-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Chinese text styles */
+.chinese-text {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", STHeiti, "华文细黑", SimSun, "宋体", serif;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+} 
