@@ -1,4 +1,5 @@
 import React from 'react';
+import ClaimTag from './ClaimTag';
 
 const ClaimItem = ({ claim, index, onRemove }) => {
   return (
@@ -8,8 +9,9 @@ const ClaimItem = ({ claim, index, onRemove }) => {
           {index + 1}
         </div>
         <div className="flex-1 text-gray-300">
-          {claim}
+          {claim.claim}
         </div>
+        <ClaimTag tag={claim.tag} />
       </div>
       <button
         onClick={() => onRemove(claim)}

@@ -1,7 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ClaimItem from './ClaimItem';
 
 const API_URL = 'http://localhost:8000';
+const ITEMS_PER_PAGE = 5;
+
+// 提取为可复用的分页列表组件
+const ClaimsList = ({ claims, onRemove, startIndex, endIndex, currentPage, totalPages, setCurrentPage }) => {
+  const currentClaims = claims.slice(startIndex, endIndex);
+
+  return (
+    <div>
+      <div className="space-y-3">
+        {currentClaims.map((claim, index) => (
+          <ClaimItem
+            key={startIndex + index}
+            claim={claim}
+            index={startIndex + index}
+            onRemove={onRemove}
+          />
+        ))}
+      </div>
+      
+      {/* 分页控件 */}
+      {claims.length > ITEMS_PER_PAGE && (
+        <div className="mt-4 flex items-center justify-between">
+          <div className="flex-1 flex justify-between items-center">
+            <div className="text-sm text-gray-400">
+              第 <span className="font-medium text-gray-200">{startIndex + 1}</span> - 
+              <span className="font-medium text-gray-200">{Math.min(endIndex, claims.length)}</span> 条，
+              共 <span className="font-medium text-gray-200">{claims.length}</span> 条
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+                className="px-2 py-1 rounded bg-gray-700 text-sm text-gray-300 disabled:opacity-50 hover:bg-gray-600"
+              >
+                首页
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-2 py-1 rounded bg-gray-700 text-sm text-gray-300 disabled:opacity-50 hover:bg-gray-600"
+              >
+                上一页
+              </button>
+              <span className="px-2 py-1 text-sm text-gray-300">
+                {currentPage} / {totalPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="px-2 py-1 rounded bg-gray-700 text-sm text-gray-300 disabled:opacity-50 hover:bg-gray-600"
+              >
+                下一页
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="px-2 py-1 rounded bg-gray-700 text-sm text-gray-300 disabled:opacity-50 hover:bg-gray-600"
+              >
+                末页
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const FactCheckForm = ({ onResultsReceived }) => {
   const [text, setText] = useState('');
@@ -12,6 +84,17 @@ const FactCheckForm = ({ onResultsReceived }) => {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
+  const [previewCurrentPage, setPreviewCurrentPage] = useState(1);
+
+  // 预览区域的分页数据
+  const previewTotalPages = Math.ceil(claims.length / ITEMS_PER_PAGE);
+  const previewStartIndex = (previewCurrentPage - 1) * ITEMS_PER_PAGE;
+  const previewEndIndex = previewStartIndex + ITEMS_PER_PAGE;
+
+  // 当claims长度变化时，重置页码到第一页
+  useEffect(() => {
+    setPreviewCurrentPage(1);
+  }, [claims.length]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -235,16 +318,15 @@ const FactCheckForm = ({ onResultsReceived }) => {
               
               <div>
                 <h3 className="text-lg font-medium text-gray-300 mb-2">待核实的点：</h3>
-                <div className="space-y-3">
-                  {claims.map((claim, index) => (
-                    <ClaimItem
-                      key={index}
-                      claim={claim}
-                      index={index}
-                      onRemove={handleRemoveClaim}
-                    />
-                  ))}
-                </div>
+                <ClaimsList
+                  claims={claims}
+                  onRemove={handleRemoveClaim}
+                  startIndex={previewStartIndex}
+                  endIndex={previewEndIndex}
+                  currentPage={previewCurrentPage}
+                  totalPages={previewTotalPages}
+                  setCurrentPage={setPreviewCurrentPage}
+                />
               </div>
             </div>
 

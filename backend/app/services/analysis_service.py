@@ -16,6 +16,7 @@ from .claim_extractor import ClaimExtractor
 from .similarity_analyzer import SimilarityAnalyzer
 from .confidence_calculator import ConfidenceCalculator
 from .explanation_generator import ExplanationGenerator
+from .deepseek_service import DeepSeekService
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,9 @@ class AnalysisService:
                 )
             )
             
+            # Initialize DeepSeek service
+            self.deepseek_service = DeepSeekService()
+            
             # Initialize specialized services
             self.claim_extractor = ClaimExtractor(self.openai_client)
             self.similarity_analyzer = SimilarityAnalyzer(self.openai_client)
@@ -43,19 +47,20 @@ class AnalysisService:
             logger.error(f"初始化 AnalysisService 失败: {str(e)}")
             raise
 
-    async def analyze_text(self, text: str, sources: List[Source]) -> FactCheckResponse:
+    async def analyze_text(self, text: str, sources: List[Source], use_deepseek: bool = False) -> FactCheckResponse:
         """
         Analyze text against sources using specialized services.
         
         Args:
             text (str): Text to analyze
             sources (List[Source]): List of sources to check against
+            use_deepseek (bool): Whether to use DeepSeek API instead of OpenAI
             
         Returns:
             FactCheckResponse: Analysis results including factuality and confidence
         """
         try:
-            logger.info("开始使用GPT进行全面分析")
+            logger.info("开始使用" + ("DeepSeek" if use_deepseek else "GPT") + "进行全面分析")
             logger.info(f"收到 {len(sources)} 个来源进行分析")
             
             if not sources:
@@ -68,9 +73,12 @@ class AnalysisService:
                     academic_sources=[]
                 )
             
-            # Extract claims using specialized service
+            # Extract claims using appropriate service
             try:
-                claims = await self.claim_extractor.extract_claims(text)
+                if use_deepseek:
+                    claims = await self.deepseek_service.extract_claims(text)
+                else:
+                    claims = await self.claim_extractor.extract_claims(text)
                 logger.info(f"提取出 {len(claims)} 个声明: {claims}")
             except Exception as e:
                 logger.error(f"提取声明时出错: {str(e)}")
@@ -110,11 +118,16 @@ class AnalysisService:
                     for source in sources:
                         logger.info(f"\n检查来源: {source.title}")
                         try:
-                            analysis = await self.similarity_analyzer.analyze_similarity(claim, source)
-                            similarity = analysis["similarity_score"]
+                            if use_deepseek:
+                                analysis = await self.deepseek_service.check_factuality(claim, source.content)
+                                similarity = analysis.get("confidence", 0)
+                            else:
+                                analysis = await self.similarity_analyzer.analyze_similarity(claim, source)
+                                similarity = analysis["similarity_score"]
+                            
                             logger.info(f"来源 '{source.title}' 的相似度得分: {similarity:.2f}")
                             
-                            if analysis["is_supporting"]:
+                            if similarity > 0.5:  # Threshold for considering a source as supporting
                                 # Calculate source contribution based on similarity and source type
                                 base_contribution = similarity
                                 if source.source_type == "academic":
@@ -188,11 +201,14 @@ class AnalysisService:
             for source in verified_sources:
                 source.contribution_score = source_contributions.get(source.title, 0)
             
-            # Generate explanation using specialized service
+            # Generate explanation using appropriate service
             try:
-                explanation = await self.explanation_generator.generate_explanation(
-                    confidence, len(verified_sources)
-                )
+                if use_deepseek:
+                    explanation = await self.deepseek_service.check_factuality(text)["explanation"]
+                else:
+                    explanation = await self.explanation_generator.generate_explanation(
+                        confidence, len(verified_sources)
+                    )
             except Exception as e:
                 logger.error(f"生成解释时出错: {str(e)}")
                 explanation = "分析过程中出现错误，无法生成详细解释。"
@@ -215,4 +231,8 @@ class AnalysisService:
                 explanation="分析过程中发生错误，请稍后重试。",
                 sources=[],
                 academic_sources=[]
-            ) 
+            )
+            
+    async def close(self):
+        """Close all service connections."""
+        await self.deepseek_service.close() 
