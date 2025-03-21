@@ -3,7 +3,7 @@ import os
 from googleapiclient.discovery import build
 import wikipediaapi
 from newsapi import NewsApiClient
-from app.models.schemas import Source
+from ..models.schemas import Source
 import logging
 
 # Configure logging

@@ -1,5 +1,5 @@
 """
-Academic search service for retrieving scholarly articles and papers.
+Academic search service for finding scholarly sources.
 
 This module provides functionality to search academic papers and studies
 from various academic sources including Google Scholar and Semantic Scholar.
@@ -7,10 +7,8 @@ from various academic sources including Google Scholar and Semantic Scholar.
 
 import os
 import logging
-import requests
 from typing import List, Dict, Optional
-from serpapi import GoogleSearch
-from app.models.schemas import Source, SourceType
+from models.schemas import Source, SourceType
 import httpx
 from bs4 import BeautifulSoup
 import re

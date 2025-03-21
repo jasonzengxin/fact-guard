@@ -7,26 +7,29 @@ and sources using GPT and basic text comparison methods.
 
 import logging
 import jieba
+import json
+import re
 from typing import Dict
-from openai import OpenAI
+from openai import AsyncOpenAI
+from ..models.schemas import Source
 
 logger = logging.getLogger(__name__)
 
 class SimilarityAnalyzer:
     """Analyzes similarity between claims and sources."""
     
-    def __init__(self, openai_client: OpenAI):
+    def __init__(self, openai_client: AsyncOpenAI):
         """
         Initialize the similarity analyzer.
         
         Args:
-            openai_client (OpenAI): OpenAI client instance
+            openai_client (AsyncOpenAI): OpenAI client instance
         """
         self.openai_client = openai_client
         # Initialize jieba for Chinese text processing
         jieba.initialize()
     
-    async def analyze_similarity(self, claim: str, source: 'Source') -> Dict:
+    async def analyze_similarity(self, claim: str, source: Source) -> Dict:
         """
         Analyze similarity between a claim and a source using GPT.
         
@@ -43,7 +46,7 @@ class SimilarityAnalyzer:
             logger.error(f"Error in GPT similarity analysis: {str(e)}")
             return self._analyze_with_basic_methods(claim, source)
     
-    async def _analyze_with_gpt(self, claim: str, source: 'Source') -> Dict:
+    async def _analyze_with_gpt(self, claim: str, source: Source) -> Dict:
         """
         Analyze similarity using GPT.
         
@@ -77,11 +80,11 @@ class SimilarityAnalyzer:
         请只返回JSON对象，不要包含其他文本。"""
 
         response = await self.openai_client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",
-                    "content": "你是一个事实核查助手。请仔细分析文本之间的相似度，即使表达方式不同，只要核心信息相似就应该给出较高的相似度分数。请用中文解释你的分析。"
+                    "content": "你是一个事实核查助手。请仔细分析文本之间的相似度，即使表达方式不同，只要核心信息相似就应该给出较高的相似度分数。请用中文解释你的分析。请确保返回的是有效的JSON格式。"
                 },
                 {"role": "user", "content": prompt}
             ],
@@ -93,11 +96,37 @@ class SimilarityAnalyzer:
         logger.debug(f"GPT similarity analysis response: {content}")
         
         try:
-            analysis = eval(content)  # 使用eval而不是json.loads，因为GPT可能返回Python字典格式
-            if not isinstance(analysis, dict):
-                raise ValueError("Response is not a dictionary")
+            # Try to parse as JSON first
+            try:
+                analysis = json.loads(content)
+            except json.JSONDecodeError:
+                # If direct JSON parsing fails, try to extract JSON object
+                json_match = re.search(r'\{[^}]+\}', content)
+                if json_match:
+                    json_str = json_match.group(0)
+                    # Replace single quotes with double quotes and fix boolean values
+                    json_str = json_str.replace("'", '"').replace("True", "true").replace("False", "false")
+                    analysis = json.loads(json_str)
+                else:
+                    raise ValueError("No valid JSON object found in response")
+
+            # Validate the required fields
+            required_fields = ["similarity_score", "is_supporting", "explanation"]
+            if not all(field in analysis for field in required_fields):
+                missing = [f for f in required_fields if f not in analysis]
+                raise ValueError(f"Missing required fields: {missing}")
+            
+            # Ensure proper types
+            analysis["similarity_score"] = float(analysis["similarity_score"])
+            analysis["is_supporting"] = bool(analysis["is_supporting"])
+            analysis["explanation"] = str(analysis["explanation"])
+
+            # Ensure score is within bounds
+            analysis["similarity_score"] = max(0.0, min(1.0, analysis["similarity_score"]))
+
         except Exception as e:
             logger.error(f"Failed to parse GPT response: {str(e)}")
+            logger.error(f"Raw content: {content}")
             return self._analyze_with_basic_methods(claim, source)
         
         # 如果相似度分数过低，但确实存在相关表达，适当提高分数
@@ -119,7 +148,7 @@ class SimilarityAnalyzer:
         
         return analysis
     
-    def _analyze_with_basic_methods(self, claim: str, source: 'Source') -> Dict:
+    def _analyze_with_basic_methods(self, claim: str, source: Source) -> Dict:
         """
         Analyze similarity using basic text comparison methods.
         

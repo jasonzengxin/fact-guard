@@ -7,19 +7,19 @@ of fact-checking results using GPT or fallback to basic explanations.
 
 import logging
 from typing import Dict
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 logger = logging.getLogger(__name__)
 
 class ExplanationGenerator:
     """Generates human-readable explanations for fact-checking results."""
     
-    def __init__(self, openai_client: OpenAI):
+    def __init__(self, openai_client: AsyncOpenAI):
         """
         Initialize the explanation generator.
         
         Args:
-            openai_client (OpenAI): OpenAI client instance
+            openai_client (AsyncOpenAI): OpenAI client instance
         """
         self.openai_client = openai_client
     
@@ -66,7 +66,7 @@ class ExplanationGenerator:
         请只返回说明文本，不要包含其他格式。"""
 
         response = await self.openai_client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",

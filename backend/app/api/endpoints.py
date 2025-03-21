@@ -1,16 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional, List
 from pydantic import BaseModel
-from app.services.analysis_service import AnalysisService
+from ..models.schemas import FactCheckRequest, FactCheckResponse
+from ..services.analysis_service import AnalysisService
 
 router = APIRouter()
-
-class FactCheckRequest(BaseModel):
-    text: Optional[str] = None
-    url: Optional[str] = None
-
-class FactCheckResponse(BaseModel):
-    claims: List[str]
 
 class ClaimResponse(BaseModel):
     claims: List[str]

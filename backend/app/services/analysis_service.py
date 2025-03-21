@@ -7,10 +7,10 @@ including claim extraction, similarity calculation, and result generation.
 
 import logging
 import os
+import httpx
 from openai import AsyncOpenAI
 from typing import List
-from dotenv import load_dotenv
-from app.models.schemas import Source, FactCheckResponse
+from ..models.schemas import Source, FactCheckResponse
 
 from .claim_extractor import ClaimExtractor
 from .similarity_analyzer import SimilarityAnalyzer
@@ -19,27 +19,24 @@ from .explanation_generator import ExplanationGenerator
 
 logger = logging.getLogger(__name__)
 
-# Load environment variables
-load_dotenv()
-
 class AnalysisService:
     def __init__(self):
         """Initialize the analysis service with required components."""
         try:
             # Initialize OpenAI client
-            api_key = os.getenv("OPENAI_API_KEY")
-            if not api_key:
-                raise ValueError("OPENAI_API_KEY environment variable is not set")
-                
-            openai_client = AsyncOpenAI(
-                api_key=api_key
+            self.openai_client = AsyncOpenAI(
+                api_key=os.getenv("OPENAI_API_KEY"),
+                http_client=httpx.AsyncClient(
+                    timeout=httpx.Timeout(30.0, connect=10.0),
+                    limits=httpx.Limits(max_keepalive_connections=5, max_connections=10)
+                )
             )
             
             # Initialize specialized services
-            self.claim_extractor = ClaimExtractor(openai_client)
-            self.similarity_analyzer = SimilarityAnalyzer(openai_client)
+            self.claim_extractor = ClaimExtractor(self.openai_client)
+            self.similarity_analyzer = SimilarityAnalyzer(self.openai_client)
             self.confidence_calculator = ConfidenceCalculator()
-            self.explanation_generator = ExplanationGenerator(openai_client)
+            self.explanation_generator = ExplanationGenerator(self.openai_client)
             
             logger.info("Initializing AnalysisService...")
         except Exception as e:

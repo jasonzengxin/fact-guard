@@ -7,7 +7,7 @@ based on various factors including claim similarity and source diversity.
 
 import logging
 from typing import List, Dict
-from app.models.schemas import Source
+from ..models.schemas import Source
 
 logger = logging.getLogger(__name__)
 

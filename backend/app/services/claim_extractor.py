@@ -12,6 +12,7 @@ import jieba
 from typing import List
 from openai import AsyncOpenAI
 import asyncio
+from ..core.config import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +56,7 @@ class ClaimExtractor:
         Returns:
             List[str]: GPT-extracted claims
         """
+        settings = get_settings()
         prompt = f"""请分析以下文本并提取可以验证的关键事实声明。
         对于每个声明，请专注于具体的、可验证的陈述，而不是观点或一般性陈述。
         如果有代词请根据上下文进行替换，比如这类儿童需要替代为具体的人群。
@@ -68,8 +70,32 @@ class ClaimExtractor:
 
         try:
             # 使用流式响应
-            stream = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
+            response = await self.openai_client.chat.completions.create(
+                model=settings.OPENAI_MODEL_NAME,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "你是一个事实核查助手。请只从给定文本中提取可验证的事实声明。"
+                    },
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.3,
+                max_tokens=500,
+                stream=True  # 启用流式响应
+            )
+            
+            # 收集完整的响应内容
+            full_content = ""
+            total_chunks = 0
+            chunks_received = 0
+            
+            # 首先计算总块数
+            async for _ in response:
+                total_chunks += 1
+            
+            # 重新创建流式响应
+            response = await self.openai_client.chat.completions.create(
+                model=settings.OPENAI_MODEL_NAME,
                 messages=[
                     {
                         "role": "system",
@@ -82,17 +108,21 @@ class ClaimExtractor:
                 stream=True
             )
             
-            # 收集完整的响应内容
-            full_content = ""
-            chunks_received = 0
-            
-            # 处理流式响应
-            async for chunk in stream:
-                if chunk.choices[0].delta.content is not None:
-                    full_content += chunk.choices[0].delta.content
-                    chunks_received += 1
-                    # 记录进度
-                    logger.debug(f"Received chunk {chunks_received}")
+            try:
+                async for chunk in response:
+                    if chunk.choices[0].delta.content is not None:
+                        full_content += chunk.choices[0].delta.content
+                        chunks_received += 1
+                        # 计算并发送进度
+                        progress = int((chunks_received / total_chunks) * 100)
+                        logger.debug(f"Extraction progress: {progress}%")
+                        # 这里可以通过某种方式（如 WebSocket）发送进度到前端
+            except asyncio.CancelledError:
+                logger.warning("Stream processing was cancelled")
+                raise
+            except Exception as e:
+                logger.error(f"Error during stream processing: {str(e)}")
+                raise
             
             logger.debug(f"GPT response content: {full_content}")
             
@@ -121,6 +151,9 @@ class ClaimExtractor:
             logger.info(f"Extracted {len(claims)} key claims using GPT")
             return claims
             
+        except asyncio.CancelledError:
+            logger.warning("GPT claim extraction was cancelled")
+            return self._extract_with_basic_methods(text)
         except Exception as e:
             logger.error(f"Error in GPT claim extraction: {str(e)}")
             return self._extract_with_basic_methods(text)

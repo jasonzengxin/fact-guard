@@ -6,8 +6,9 @@ import uvicorn
 from dotenv import load_dotenv
 import os
 
-# Load environment variables at startup
-load_dotenv()
+# Load environment variables from the correct path
+env_path = Path(__file__).parent / '.env'
+load_dotenv(env_path)
 
 # Verify OpenAI API key is set
 if not os.getenv("OPENAI_API_KEY"):
@@ -41,6 +42,8 @@ if static_dir.exists():
 
 @app.get("/")
 async def root():
+    # Example of using a breakpoint for debugging
+    # breakpoint()  # Uncomment this line to add a breakpoint
     return {"message": "Welcome to FactGuard API"}
 
 @app.get("/health")
