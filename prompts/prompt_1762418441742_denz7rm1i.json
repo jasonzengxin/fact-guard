@@ -1,0 +1,21 @@
+{
+  "id": "prompt_1762418441742_denz7rm1i",
+  "name": "{\"session_id\":\"c5810014-4e58-44aa-a01e-6b82b1fbaae",
+  "description": "Auto-captured from Claude Code on 2025-11-06 16:40:41",
+  "content": "{\"session_id\":\"c5810014-4e58-44aa-a01e-6b82b1fbaaeb\",\"transcript_path\":\"/Users/xinzeng/.claude/projects/-Users-xinzeng-code-performance/c5810014-4e58-44aa-a01e-6b82b1fbaaeb.jsonl\",\"cwd\":\"/Users/xinzeng/code/performance\",\"permission_mode\":\"default\",\"hook_event_name\":\"UserPromptSubmit\",\"prompt\":\"what is this project about\"}",
+  "tags": [
+    "claude-code",
+    "auto-captured",
+    "user:admin"
+  ],
+  "category": "captured-prompts",
+  "createdAt": "2025-11-06T08:40:41.742Z",
+  "updatedAt": "2025-11-06T08:40:41.742Z",
+  "metadata": {
+    "source": "claude-code-hook",
+    "captured_at": "2025-11-06T16:40:41.669233",
+    "length": 323,
+    "user_id": "admin",
+    "capturedAt": "2025-11-06T08:40:41.741Z"
+  }
+}
