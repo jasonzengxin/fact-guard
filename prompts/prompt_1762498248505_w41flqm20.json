@@ -1,0 +1,18 @@
+{
+  "id": "prompt_1762498248505_w41flqm20",
+  "name": "Code Review Assistant",
+  "description": "Auto-captured from Claude Code",
+  "content": "Please review this code and provide feedback on code quality, potential bugs, and improvements.",
+  "tags": [
+    "claude-code",
+    "auto-captured"
+  ],
+  "category": "captured-prompts",
+  "createdAt": "2025-11-07T06:50:48.505Z",
+  "updatedAt": "2025-11-07T06:50:48.505Z",
+  "metadata": {
+    "source": "claude-code-hook",
+    "capturedAt": "2025-11-07T06:50:48.505Z",
+    "user_id": "admin"
+  }
+}
