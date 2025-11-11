@@ -1,0 +1,21 @@
+{
+  "id": "prompt_1762846951098_jgbxhfhfg",
+  "name": "{\"session_id\":\"6502f1c6-a409-405d-ab9f-a0e2c27658e",
+  "description": "Auto-captured from Claude Code on 2025-11-11 15:42:31",
+  "content": "{\"session_id\":\"6502f1c6-a409-405d-ab9f-a0e2c27658e7\",\"transcript_path\":\"/Users/xinzeng/.claude/projects/-Users-xinzeng-code-github-vc/6502f1c6-a409-405d-ab9f-a0e2c27658e7.jsonl\",\"cwd\":\"/Users/xinzeng/code/github_vc\",\"permission_mode\":\"default\",\"hook_event_name\":\"UserPromptSubmit\",\"prompt\":\"hi\"}",
+  "tags": [
+    "claude-code",
+    "auto-captured",
+    "user:admin"
+  ],
+  "category": "captured-prompts",
+  "createdAt": "2025-11-11T07:42:31.098Z",
+  "updatedAt": "2025-11-11T07:42:31.098Z",
+  "metadata": {
+    "source": "claude-code-hook",
+    "captured_at": "2025-11-11T15:42:31.046734",
+    "length": 295,
+    "user_id": "admin",
+    "capturedAt": "2025-11-11T07:42:31.097Z"
+  }
+}
