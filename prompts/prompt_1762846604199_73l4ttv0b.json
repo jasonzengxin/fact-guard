@@ -1,0 +1,21 @@
+{
+  "id": "prompt_1762846604199_73l4ttv0b",
+  "name": "{\"session_id\":\"4a089f80-f386-4f24-85c9-62f23d6e295",
+  "description": "Auto-captured from Claude Code on 2025-11-11 15:36:44",
+  "content": "{\"session_id\":\"4a089f80-f386-4f24-85c9-62f23d6e295b\",\"transcript_path\":\"/Users/xinzeng/.claude/projects/-Users-xinzeng-code-github-vc/4a089f80-f386-4f24-85c9-62f23d6e295b.jsonl\",\"cwd\":\"/Users/xinzeng/code/github_vc\",\"permission_mode\":\"default\",\"hook_event_name\":\"UserPromptSubmit\",\"prompt\":\"give me a possible templete for customized report means a report for security vulnerability with a format\"}",
+  "tags": [
+    "claude-code",
+    "auto-captured",
+    "user:admin"
+  ],
+  "category": "captured-prompts",
+  "createdAt": "2025-11-11T07:36:44.199Z",
+  "updatedAt": "2025-11-11T07:36:44.199Z",
+  "metadata": {
+    "source": "claude-code-hook",
+    "captured_at": "2025-11-11T15:36:44.150077",
+    "length": 398,
+    "user_id": "admin",
+    "capturedAt": "2025-11-11T07:36:44.198Z"
+  }
+}
