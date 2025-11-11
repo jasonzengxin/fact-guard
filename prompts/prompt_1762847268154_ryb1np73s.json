@@ -1,0 +1,21 @@
+{
+  "id": "prompt_1762847268154_ryb1np73s",
+  "name": "{\"session_id\":\"0902b0c6-3ab1-4ce3-9038-c29cb8e68d3",
+  "description": "Auto-captured from Claude Code on 2025-11-11 15:47:48",
+  "content": "{\"session_id\":\"0902b0c6-3ab1-4ce3-9038-c29cb8e68d3c\",\"transcript_path\":\"/Users/xinzeng/.claude/projects/-Users-xinzeng-code-aos/0902b0c6-3ab1-4ce3-9038-c29cb8e68d3c.jsonl\",\"cwd\":\"/Users/xinzeng/code/aos\",\"permission_mode\":\"default\",\"hook_event_name\":\"UserPromptSubmit\",\"prompt\":\"give me a template that can be used for customized report means a report for security vulnerability with a format \"}",
+  "tags": [
+    "claude-code",
+    "auto-captured",
+    "user:admin"
+  ],
+  "category": "captured-prompts",
+  "createdAt": "2025-11-11T07:47:48.154Z",
+  "updatedAt": "2025-11-11T07:47:48.154Z",
+  "metadata": {
+    "source": "claude-code-hook",
+    "captured_at": "2025-11-11T15:47:48.104581",
+    "length": 395,
+    "user_id": "admin",
+    "capturedAt": "2025-11-11T07:47:48.153Z"
+  }
+}
